@@ -21,7 +21,7 @@ void check_plugin(char* filename, unsigned char* code, zip_int64_t size, float* 
         return;
     }
 
-    unsigned char* text = malloc(size);
+    unsigned char* text = malloc(size + 1);
     unsigned char* text_ptr = text;
     size_t i;
 
@@ -32,7 +32,7 @@ void check_plugin(char* filename, unsigned char* code, zip_int64_t size, float* 
     	}
     }
 
-    text_ptr[i] = '\0';
+    *text_ptr = '\0';
 
     bool safe = true;
 
@@ -47,14 +47,23 @@ void check_plugin(char* filename, unsigned char* code, zip_int64_t size, float* 
     free(text);
 }
 
-void plugin_scan(char* filename) {
+float plugin_scan(char* filename) {
+	char hash[65];
+
+    if (!calc_sha256(filename, hash)) {
+        fprintf(stderr, "Error hash calculation\n");
+        exit(1);
+    }
+
+    printf("SHA256: %s\n\n", hash);
+
 	int err = 0;
 
 	zip_t* archive = NULL;
 	archive = zip_open(filename, 0, &err);
 
 	struct zip_stat* finfo = NULL;
-	finfo = calloc(256, sizeof(int));
+	finfo = calloc(1, sizeof(struct zip_stat));
 
 	// Инициализация структуры информации о файле
 	zip_stat_init(finfo);
@@ -84,5 +93,5 @@ void plugin_scan(char* filename) {
 		}
 	}
 
-	printf("Danger level %.1f\n", danger_level);
+	return danger_level;
 }

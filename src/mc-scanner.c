@@ -20,16 +20,16 @@ int main(int argc, char* argv[]) {
     get_lines("whitelist_hashes.txt", &whitelist_hashes, &whitelist_hash_count);
     get_lines("blacklist_hashes.txt", &blacklist_hashes, &blacklist_hash_count);
 
-    char hash[65];
+    for (int i = 1; i < argc; i++) {
+        printf("Plugin %s\n", argv[i]);
 
-    if (!calc_sha256(argv[1], hash)) {
-        fprintf(stderr, "Error hash calculation\n");
-        exit(1);
+        float danger_level = plugin_scan(argv[i]);
+        printf("Danger level: %.1f\n", danger_level);
+
+        if (i != argc - 1) {
+            printf("\n==============================\n\n");
+        }
     }
-
-    printf("SHA256: %s\n\n", hash);
-
-    plugin_scan(argv[1]);
 
 	return 0;
 }
