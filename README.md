@@ -7,6 +7,12 @@ make
 ```
 
 ### Usage
+Scanning a singe plugin:
 ```
 ./mc-scanner [plugin jar]
+```
+
+Scanning multiple plugins
+```
+./mc-scanner [plugin jar 1] [plugin jar 2] [plugin jar 3]
 ```
