@@ -4,9 +4,6 @@
 #include <openssl/sha.h>
 #include "utils.h"
 
-char** backdoor_signatures = NULL;
-int signature_count = 0;
-
 int is_ascii(unsigned char c) {
     return (c >= 32 && c <= 127);
 }
@@ -69,11 +66,12 @@ bool calc_sha256(char* filename, char output[65]) {
     return true;
 }
 
-bool load_signatures(char* filename) {
+void get_lines(char* filename, char*** lines, int* line_count_output) {
     FILE* fp = fopen(filename, "r");
 
     if (fp == NULL) {
-        return false;
+        fprintf(stderr, "Error opening %s file\n", filename);
+        exit(1);
     }
 
     char buffer[BUFFER_SIZE];
@@ -85,7 +83,7 @@ bool load_signatures(char* filename) {
 
     fseek(fp, 0, SEEK_SET);
 
-    backdoor_signatures = malloc(line_count * sizeof(char*));
+    *lines = malloc(line_count * sizeof(char*));
     char* signature;
     int i = 0;
 
@@ -93,13 +91,11 @@ bool load_signatures(char* filename) {
         signature = malloc(strlen(buffer) + 1);
         strcpy(signature, buffer);
         signature[strcspn(buffer, "\n")] = '\0';
-        backdoor_signatures[i] = signature;
+        (*lines)[i] = signature;
         i++;
     }
 
     fclose(fp);
-
-    signature_count = line_count;
-
-    return true;
+    
+    *line_count_output = line_count;
 }

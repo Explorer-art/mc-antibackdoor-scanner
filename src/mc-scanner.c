@@ -13,10 +13,16 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
-    if (!load_signatures("signatures.txt")) {
-        fprintf(stderr, "Error opening signatures file\n");
-        exit(1);
-    }
+    int signature_count;
+    int whitelist_hash_count;
+    int blacklist_hash_count;
+    char** signatures;
+    char** whitelist_hashes;
+    char** blacklist_hashes;
+
+    get_lines("signatures.txt", &signatures, &signature_count);
+    get_lines("whitelist_hashes.txt", &whitelist_hashes, &whitelist_hash_count);
+    get_lines("blacklist_hashes.txt", &blacklist_hashes, &blacklist_hash_count);
 
 	FILE* fp = fopen(argv[1], "rb");
 
@@ -68,10 +74,10 @@ int main(int argc, char* argv[]) {
     float danger_level = 0;
 
     for (int i = 0; i < signature_count; i++) {
-        if (strstr(text, backdoor_signatures[i]) != NULL) {
+        if (strstr(text, signatures[i]) != NULL) {
             safe = false;
             danger_level++;
-            printf("Detected %s\n", backdoor_signatures[i]);
+            printf("Detected %s\n", signatures[i]);
         }
     }
 
