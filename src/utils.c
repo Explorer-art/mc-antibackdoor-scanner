@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <openssl/sha.h>
+#include <zip.h>
 #include "utils.h"
 
 int is_ascii(unsigned char c) {
