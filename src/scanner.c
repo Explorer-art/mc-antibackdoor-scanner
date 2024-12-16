@@ -1,9 +1,9 @@
-#include "scanner.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <zip.h>
+#include "scanner.h"
 #include "utils.h"
 
 unsigned char java_signature[] = { 0xCA, 0xFE, 0xBA, 0xBE };
